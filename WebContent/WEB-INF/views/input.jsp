@@ -13,6 +13,14 @@
 </head>
 <body>
 
+<!-- 
+	<form action="testConversionServiceConverer" method="post">
+		 Format: lastname-email-gender-department.id For example: GG-gg@gmail.com-0-105- 
+		Employee: <input type="text" name="employee"/>
+		<input type="submit" value="Submit"/>
+	</form>
+	<br><br>
+ -->
 
 	<!-- 
 	1. Why use "from" tags?
@@ -52,6 +60,16 @@
 		<br>
 	Department: <form:select path="department.id" items="${departments }" itemLabel="departmentName" itemValue="id"></form:select>
 	<br>
+	<!-- 
+		1. Data type transferring 
+		2. Data type format
+		3. Data verificatioin
+	 -->
+	
+	
+	Birth: <form:input path="birth"/>
+	<br>
+	
 	<input type="submit" value="Submit"/>
 	</form:form>
 

@@ -1,11 +1,23 @@
 package com.tony.springmvc.crud.entities;
 
+import java.util.Date;
+
 public class Employee {
 	private Integer id;
 	private String lastName;
 	private String email;
 	private Integer gender;
 	private Department department;
+
+	private Date birth;
+
+	public Date getBirth() {
+		return birth;
+	}
+
+	public void setBirth(Date birth) {
+		this.birth = birth;
+	}
 
 	public Integer getId() {
 		return id;
@@ -47,12 +59,6 @@ public class Employee {
 		this.department = department;
 	}
 
-	@Override
-	public String toString() {
-		return "Employee [id=" + id + ", lastName=" + lastName + ", email=" + email + ", gender=" + gender
-				+ ", department=" + department + "]";
-	}
-
 	public Employee(Integer id, String lastName, String email, Integer gender, Department department) {
 		super();
 		this.id = id;
@@ -60,6 +66,12 @@ public class Employee {
 		this.email = email;
 		this.gender = gender;
 		this.department = department;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", lastName=" + lastName + ", email=" + email + ", gender=" + gender
+				+ ", department=" + department + ", birth=" + birth + "]";
 	}
 
 	public Employee() {

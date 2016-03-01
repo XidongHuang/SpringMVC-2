@@ -24,4 +24,12 @@
 
 
 	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!-- <mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven> -->
+
+	<!-- Configure ConversionService -->
+	<!-- <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"> 
+		<property name="converters"> <set> <ref bean="employeeConverter"/> </set> 
+		</property> </bean> -->
+
 </beans>
