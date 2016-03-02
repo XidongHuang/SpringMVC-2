@@ -1,0 +1,400 @@
+<%@page import="java.util.List"%>
+<%@page import="tony.project.language.formatter.JSONHashMap"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Map.Entry"%>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="Expires" content="0">  
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">  
+<meta http-equiv="Pragma" content="no-cache">
+<title>Table</title>
+
+
+<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="assets/bootstrap-table/src/bootstrap-table.css">
+<link rel="stylesheet"
+	href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">
+	<link rel="stylesheet" href="//rawgit.com/wenzhixin/bootstrap-table-fixed-columns/master/bootstrap-table-fixed-columns.css">
+<script src="assets/jquery.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/src/bootstrap-table.js"></script>
+<script
+	src="assets/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js"></script>
+<script
+	src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>
+<script
+	src="assets/bootstrap-table/src/extensions/export/bootstrap-table-export.js"></script>
+	<script src="//rawgit.com/wenzhixin/bootstrap-table-fixed-columns/master/bootstrap-table-fixed-columns.js"></script>
+<script
+	src="//rawgit.com/hhurz/tableExport.jquery.plugin/master/tableExport.js"></script>
+<script src="js/ga.js"></script>
+
+</head>
+<body>
+
+	<%
+		response.addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		String uploadingTag = request.getParameter("uploadingTag");
+		String sj = (String)request.getSession().getAttribute("uploadJSON");
+		System.out.println("sj from upload:---------" + sj);
+	//	System.out.println(uploadingTag);
+		String term = request.getParameter("t");
+	//	System.out.println(term);
+		String level = request.getParameter("l");
+	//	System.out.println(level);
+		String course = request.getParameter("c");
+	//	System.out.println(course);
+		String loadingRequest = term + level + course;
+
+		List<String> attributeNames = null;
+
+	//	ArrayList<HashMap<String, String>> resultJSON = (ArrayList<HashMap<String, String>>) request
+	//			.getAttribute("resultJSON");
+	
+	ArrayList<String> tableAttributes = (ArrayList<String>)request.getAttribute("tableAttributes");
+	
+		System.out.println(tableAttributes == null);
+		if (level != null && course != null && tableAttributes == null && term != null && uploadingTag == null) {
+			//System.out.println(level+course);
+			//try{
+			System.out.println("No resultJSON and Saving!------");
+			
+			request.setAttribute("loadingRequest", loadingRequest);
+			request.getRequestDispatcher("/loadScores.do").forward(request, response);
+
+			//System.out.println(json.size());
+			//} catch(NullPointerException e) {
+			//	e.printStackTrace();
+			//}
+
+
+		}
+
+		if (tableAttributes != null & level != null && course != null && term != null && uploadingTag == null) {
+
+			System.out.println("No savingTag!!------");
+		//	System.out.println(resultJSON);
+		//	System.out.println(resultJSON.size());
+
+			if (!tableAttributes.isEmpty()) {
+		
+				attributeNames = new ArrayList<String>();
+				for(String key : tableAttributes){
+					if (!key.equals("FirstName") && 
+							!key.equals("Surname") && 
+							!key.equals("StudentID") && 
+							!key.equals("FinalMarks") && 
+							!key.equals("CourseCode")) {
+						attributeNames.add(key);
+					}
+				}
+				
+				
+
+			} else {
+
+				loadingRequest = "empty";
+			}
+
+		}
+
+		if (uploadingTag != null && tableAttributes == null) {
+			System.out.println("SavingTag is Here --------");
+		//	System.out.println("------attributeNames: " + (attributeNames == null));
+
+			request.setAttribute("uploadingTag", uploadingTag);
+			request.getRequestDispatcher("/uploadFile.do").forward(request, response);
+
+		}
+
+		if (uploadingTag != null && tableAttributes != null) {
+			System.out.println(uploadingTag + "====");
+			System.out.println("uploadingTag and resultJSON!!!====");
+			loadingRequest = uploadingTag+"&type=uploadingFile";
+
+			if (!tableAttributes.isEmpty()) {
+				
+				attributeNames = new ArrayList<String>();
+				for(String key : tableAttributes){
+					if (!key.equals("FirstName") && 
+							!key.equals("Surname") && 
+							!key.equals("StudentID") && 
+							!key.equals("FinalMarks") && 
+							!key.equals("CourseCode")) {
+						attributeNames.add(key);
+					}
+				}
+				
+				
+				
+					
+			} else {
+				loadingRequest = "empty";
+			}
+
+		}
+	%>
+
+
+	<table 	id="table" data-toggle="table"
+			data-url="jsonData.jsp?courseCode=<%=loadingRequest%>" 
+			data-pagination="true"
+			data-page-list="[5, 10, 20, 50, 100, 200]" 
+			data-toolbar="#toolbar"
+			data-show-refresh="true" 
+			data-show-columns="true"
+			data-minimum-count-columns="2" 
+			data-show-export="true"
+			data-cache="false"
+			data-search="true"
+			data-click-to-select="true">
+
+		<thead>
+			<tr>
+				<th data-field="state" data-checkbox="true"></th>
+				<th data-field="StudentID" data-sortable="true" fixedColumns="true">StudentID</th>
+				<th data-field="FirstName" data-editable="true" data-sortable="true" fixedColumns="true">First
+					Name</th>
+				<th data-field="Surname" data-editable="true" data-sortable="true" fixedColumns="true">Surname</th>
+				<%
+					if (attributeNames != null) {
+						for (int i = 0; i < attributeNames.size(); i++) {
+				%>
+				<th data-field="<%=attributeNames.get(i)%>" data-editable="true"
+					data-sortable="true"><%=attributeNames.get(i)%></th>
+
+
+				<%
+					}
+					}
+				%>
+				<th data-field="FinalMarks" data-editable="true"
+					data-sortable="true">FinalMarks</th>
+				<!--  <th data-field="CourseCode" data-editable="false"
+					data-sortable="false" style="display:none">CourseCode</th>
+				-->
+			</tr>
+		</thead>
+	</table>
+	<div class="btn-group btn-group-lg pull-left" role="group"
+		aria-label="Large button group" id="remove">
+		<button type="button" class="btn btn-danger" data-target="#deleteTableModal" data-toggle="modal">Delete</button>
+	</div>
+	<div class="btn-group btn-group-lg pull-right" role="group"
+		aria-label="Large button group" id="save">
+		<button type="button" class="btn btn-success" data-target="#saveTableModal" data-toggle="modal">Save</button>
+	</div>
+
+
+<div class="modal fade" id="deleteTableModal" role="dialog" aria-hidden="true" display="none">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="deleteTableModalHead" style="text-align: center"></h4>
+        </div>
+        <div class="modal-body">
+          <p id="deleteTableModalBody" style="color: red; text-align: center"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal" id="deleteTableConfirm">Yes</button>
+          <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade" id="saveTableModal" role="dialog" aria-hidden="true" display="none">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="saveTableModalHead" style="text-align: center"></h4>
+        </div>
+        <div class="modal-body">
+          <p id="saveTableModalBody" style="color: red; text-align: center"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal" id="saveTableConfirm">Yes</button>
+          <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade" id="messageModal" role="dialog" aria-hidden="true" display="none">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="messageModalHead" style="text-align: center"></h4>
+        </div>
+        <div class="modal-body">
+          <p id="messageModalBody" style="color: red; text-align: center"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+	<%
+		if (loadingRequest != null) {
+	%>
+	<!-- change "data-url" depending on different uploadTag or checkTag  -->
+	<script type="text/javascript">
+		$(document).ready(function(){
+	
+		$('table').attr("data-url","jsonData.jsp?courseCode=<%=loadingRequest%>");
+
+		});
+	</script>
+
+	<%
+		}
+	%>
+
+	<!-- Pass table data into back-end -->
+	<script>
+		var $table = $('#table'), $button = $('#save');
+	
+		
+		
+		$(function() {
+			$button.click(function() {
+				document.getElementById("saveTableModalHead").innerHTML = "Save Item";
+				document.getElementById("saveTableModalBody").innerHTML = "Are you sure to save these scores?";
+				<%
+					if(uploadingTag != null){
+						
+						loadingRequest = uploadingTag;
+					}
+				
+				%>
+				
+				alert("Testing!");
+				alert("<%= loadingRequest%>");
+				
+				$("#saveTableConfirm").click(function(){
+					$("button").prop("disabled",true);
+					var j = JSON.stringify($table.bootstrapTable('getData'));
+					alert(jQuery.type(j));
+				 	 $.ajax({
+						url:'saveServlet?method=saveTableData',
+						type:'POST',
+						dataType: 'text',
+						data:{'tableData': JSON.stringify($table.bootstrapTable('getData')), 'courseCode': "<%= loadingRequest%>"}
+				 	 }).done(function(response){
+				 		$("button").prop("disabled",false);
+				 		 if(response == "Success"){
+				 			 
+				 			document.getElementById("messageModalHead").innerHTML = "Save Scores";
+							document.getElementById("messageModalBody").innerHTML = "Save successfully!";
+							$("#saveTableModal").modal("hide");
+							$("#messageModal").modal();
+				 			 
+				 		 } else {
+				 			 
+				 			document.getElementById("messageModalHead").innerHTML = "Notice!";
+							document.getElementById("messageModalBody").innerHTML = "Cannot save these scores.";
+							$("#saveTableModal").modal("hide");
+							$("#messageModal").modal();
+				 			 
+				 		 }
+							
+						
+				 	 
+				 	 
+				 	 });//ajax
+					
+				});//tableConfirm click
+				
+					
+			});
+		});
+	</script>
+	
+	<script>
+	var $remove = $("#remove"), $table = $("table"), studentID;
+
+	
+		$remove.click(function(){
+				
+				document.getElementById("deleteTableModalHead").innerHTML = "Delete Item";
+				document.getElementById("deleteTableModalBody").innerHTML = "Are you sure delete the selected scores(s)?";
+			
+			var ids =  $.map($table.bootstrapTable("getSelections"), function(row){
+				//alert(row.StudentID);
+				//alert(row.length);
+
+				
+				return row.StudentID;
+				
+				
+			});
+			
+		$("#deleteTableConfirm").click(function(){
+			//alert(ids.length);
+			$("button").prop("disabled",true);		
+
+			$.ajax({
+				url:'studentScores.delete?method=deleteScoresFromTable&courseCode=<%= loadingRequest%>',
+				type:'POST',
+				dataType: 'text',
+				data:{'sIDArray': ids.toString()}
+			}).done(function(response){
+				$("button").prop("disabled",false);
+				alert(response);
+				if(response == "Success"){
+					
+					$table.bootstrapTable("remove", {
+					
+						field:"StudentID",
+						values: ids
+					
+					});
+					
+				document.getElementById("messageModalHead").innerHTML = "Delete Item";
+				document.getElementById("messageModalBody").innerHTML = "Success to delete Item(s).";
+				$("#deleteTableModal").modal("hide");
+				$("#messageModal").modal();
+				ids.length = 0;
+				
+			} else {
+				//alert(response);
+				document.getElementById("messageModalHead").innerHTML = "Notice!";
+				document.getElementById("messageModalBody").innerHTML = "Cannot delete the selected item(s).";
+				$("#deleteTableModal").modal("hide");
+				$("#messageModal").modal();
+				ids.length = 0;
+			}
+			
+			
+			
+			});//ajax
+					
+				});
+		});
+		
+		
+		
+	
+	
+	</script>
+	
+
+</body>
+</html>

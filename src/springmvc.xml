@@ -32,4 +32,55 @@
 		<property name="converters"> <set> <ref bean="employeeConverter"/> </set> 
 		</property> </bean> -->
 
+	<!-- Configuration International resources file -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="i18n"></property>
+
+	</bean>
+
+	<mvc:view-controller path="/i18n" view-name="i18n" />
+	<mvc:view-controller path="/i18n2" view-name="i18n2" />
+
+
+	<!-- Configure SessionLocalResolver -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+	<mvc:interceptors>
+		<!-- Configure self-define interceptor -->
+		<bean class="com.tony.springmvc.interceptors.FirstInterceptor"></bean>
+		
+		
+		<!-- Configure Interceptor's available path -->
+		<mvc:interceptor>
+		
+			<mvc:mapping path="/emps"/>
+			<bean class="com.tony.springmvc.interceptors.SecondInterceptor"></bean>
+		</mvc:interceptor>
+		
+		
+		<!-- Configure LocaleChanceInterceptor -->
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+	</mvc:interceptors>
+
+
+	<!-- Configure MultipartResolver -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<property name="maxUploadSize" value="1024000"></property>
+
+	</bean>
+
+	<!-- Configure SimpleMappingExceptionResolver to map to Exception -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+	<property name="exceptionAttribute" value="ex"></property>
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.ArrayIndexOutOfBoundsException">error</prop>
+			</props>
+		</property>
+	
+	</bean>
+
 </beans>

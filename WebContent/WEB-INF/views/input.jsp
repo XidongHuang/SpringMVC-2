@@ -32,11 +32,15 @@
 
  -->
 
+	<br>
+	<br>
 	<form:form action="${pageContext.request.contextPath}/emp" moethod="POST" modelAttribute="employee">
 		<!-- "path" attribute points to html page's name attribute -->
+		<br>
 	<c:if test="${employee.id == null }">
 	
 	LastName: <form:input path="lastName" />
+		<form:errors path="lastName"></form:errors>
 	
 	</c:if>
 	<c:if test="${employee.id != null }">
@@ -47,6 +51,7 @@
 	</c:if>
 		<br>
 	Email: <form:input path="email" />
+		<form:errors path="email"></form:errors>
 		<br>
 		<%
 			Map<String, Object> genders = new HashMap();
@@ -63,11 +68,23 @@
 	<!-- 
 		1. Data type transferring 
 		2. Data type format
-		3. Data verificatioin
+		3. Data validation
+		1) How to validate? Annotation?
+			a. Use JSR 303 validation standard
+			b. Add hibernate validator validate framework
+			c. In SpringMVC configuration file, add <mvc:annotation-driven />
+			d. Add annotation on the specific attributes in beans
+			e. For target method, add @Valid annotation
+		2) If these is exception, where the page is going to?
+		3) Exception message? How to display, how to format error message (Internationalization)
+		
 	 -->
 	
 	
 	Birth: <form:input path="birth"/>
+		<form:errors path="birth"></form:errors>
+	<br>
+	Salary: <form:input path="salary"/>
 	<br>
 	
 	<input type="submit" value="Submit"/>
